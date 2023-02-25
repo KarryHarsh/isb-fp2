@@ -1,0 +1,16 @@
+base:
+  index: 'GOLD'
+  experiment: 'stock_up_down'
+  run_name: 'initial_assessment'
+  
+svm:
+  gamma: 2
+  c_value: 2
+
+k_neighbors:
+  n_neighbours: 5
+
+gbc:
+  n_estimators: 100
+  
+   

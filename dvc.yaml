@@ -1,0 +1,34 @@
+stages:
+  data-scrapping:
+    cmd: papermill input_notebooks/Data_scrapping.ipynb output_notebooks/Data_scrapping_out.ipynb  
+    deps:
+    - input_notebooks/Data_scrapping.ipynb
+    outs:
+    - datadir/datasets
+
+  Feature_engineering:
+    cmd: papermill input_notebooks/Feature_engineering.ipynb output_notebooks/Feature_engineering_out.ipynb  
+    deps:
+    - input_notebooks/Feature_engineering.ipynb
+    - datadir/datasets
+    outs:
+    - datadir/transformed
+
+  forecasting:
+    cmd: papermill input_notebooks/prophet_forecasting.ipynb output_notebooks/prophet_forecasting_out.ipynb  
+    deps:
+    - input_notebooks/prophet_forecasting.ipynb
+    - datadir/datasets
+    
+  oil_forecasting:
+    cmd: papermill input_notebooks/oil_forecasting.ipynb output_notebooks/oil_forecasting_out.ipynb  
+    deps:
+    - input_notebooks/oil_forecasting.ipynb
+    - datadir/datasets
+    outs:
+    - artifact_dir
+
+  model_registry:
+    cmd: papermill input_notebooks/model_registry.ipynb output_notebooks/model_registry_out.ipynb  
+    deps:
+    - input_notebooks/model_registry.ipynb

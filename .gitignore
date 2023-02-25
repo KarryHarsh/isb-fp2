@@ -177,3 +177,4 @@ mlruns/
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pycache__/
 .ipynb_checkpoints/
+/artifact_dir

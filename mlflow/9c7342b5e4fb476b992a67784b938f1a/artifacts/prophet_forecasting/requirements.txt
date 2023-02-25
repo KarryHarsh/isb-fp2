@@ -1,0 +1,8 @@
+mlflow<3,>=2.1
+cffi==1.15.1
+cloudpickle==2.2.1
+defusedxml==0.7.1
+ipython==8.10.0
+plotly==5.13.0
+prophet==1.1.2
+scikit-learn==1.2.1
