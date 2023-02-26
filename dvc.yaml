@@ -1,13 +1,13 @@
 stages:
   data-scrapping:
-    cmd: papermill input_notebooks/Data_scrapping.ipynb output_notebooks/Data_scrapping_out.ipynb  
+    cmd: papermill input_notebooks/Data_scrapping.ipynb output_notebooks/Data_scrapping_out.ipynb  -p COUNTRY ${base.COUNTRY} -p FROM ${data_scrapping.FROM} -p TO ${data_scrapping.TO}
     deps:
     - input_notebooks/Data_scrapping.ipynb
     outs:
     - datadir/datasets
 
   Feature_engineering:
-    cmd: papermill input_notebooks/Feature_engineering.ipynb output_notebooks/Feature_engineering_out.ipynb  
+    cmd: papermill input_notebooks/Feature_engineering.ipynb output_notebooks/Feature_engineering_out.ipynb -p COUNTRY ${base.COUNTRY}
     deps:
     - input_notebooks/Feature_engineering.ipynb
     - datadir/datasets
@@ -15,20 +15,27 @@ stages:
     - datadir/transformed
 
   forecasting:
-    cmd: papermill input_notebooks/prophet_forecasting.ipynb output_notebooks/prophet_forecasting_out.ipynb  
+    cmd: papermill input_notebooks/prophet_forecasting.ipynb output_notebooks/prophet_forecasting_out.ipynb -p COUNTRY ${base.COUNTRY} -p EXPERIMENT ${prophet_forecasting.EXPERIMENT} -p intervel ${prophet_forecasting.intervel}
     deps:
     - input_notebooks/prophet_forecasting.ipynb
     - datadir/datasets
+    - model/prophet
     
   oil_forecasting:
-    cmd: papermill input_notebooks/oil_forecasting.ipynb output_notebooks/oil_forecasting_out.ipynb  
+    cmd: papermill input_notebooks/oil_forecasting.ipynb output_notebooks/oil_forecasting_out.ipynb -p COUNTRY ${base.COUNTRY} -p GAMMA ${oil_forecasting.GAMMA} -p C_VALUE ${oil_forecasting.C_VALUE} -p N_NEIGHBORS ${oil_forecasting.N_NEIGHBORS} -p N_ESTIMATORS ${oil_forecasting.N_ESTIMATORS}
     deps:
     - input_notebooks/oil_forecasting.ipynb
-    - datadir/datasets
+    - datadir/transformed
     outs:
-    - artifact_dir
+    - artifact_dir/models
+    - artifact_dir/plots
+    metrics:
+    - artifact_dir/metrics:
+        cache: false
 
   model_registry:
-    cmd: papermill input_notebooks/model_registry.ipynb output_notebooks/model_registry_out.ipynb  
+    cmd: papermill input_notebooks/model_registry.ipynb output_notebooks/model_registry_out.ipynb -p COUNTRY ${base.COUNTRY} -p model_name ${model_registry.model_name} -p model_version ${model_registry.model_version}
     deps:
     - input_notebooks/model_registry.ipynb
+    - artifact_dir/models
+    - model/prophet

@@ -1,16 +1,31 @@
-base:
-  index: 'GOLD'
-  experiment: 'stock_up_down'
-  run_name: 'initial_assessment'
-  
-svm:
-  gamma: 2
-  c_value: 2
 
-k_neighbors:
-  n_neighbours: 5
+base: 
+  COUNTRY: "RU"
 
-gbc:
-  n_estimators: 100
-  
+data_scrapping:
+  FROM: "2001-01-01"
+  TO: "2023-02-01"
+
+prophet_forecasting:
+  EXPERIMENT: "prophet_forecasting"
+  intervel: 0.95
+
+oil_forecasting:
+  # SVM
+  GAMMA: 2
+  C_VALUE: 1
+
+
+  # K-neighbour
+  N_NEIGHBORS: 5
+
+  # Gradient boosting Classifier
+  N_ESTIMATORS: 100
+
+model_registry:
+  model_name: "Logistic_Regression"
+  model_version: 1
+  model_description: "This model forecasts the oil production based on the previous data."
+  version_description: "mlflow model version"
+
    

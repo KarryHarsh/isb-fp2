@@ -1,59 +1,84 @@
 schema: '2.0'
 stages:
   data-scrapping:
-    cmd: papermill input_notebooks/Data_scrapping.ipynb output_notebooks/Data_scrapping_out.ipynb
+    cmd: papermill input_notebooks/Data_scrapping.ipynb output_notebooks/Data_scrapping_out.ipynb  -p
+      COUNTRY RU -p FROM 2001-01-01 -p TO 2023-02-01
     deps:
     - path: input_notebooks/Data_scrapping.ipynb
-      md5: 72178291ac17eb60be91299b85e74d98
-      size: 8194
+      md5: 0954b15339cf146f7995a55ea01136c6
+      size: 8059
     outs:
     - path: datadir/datasets
-      md5: 9232fb21abd122428761f623944c0bfa.dir
-      size: 5732
+      md5: 15b2379fbeabf992dd22a5186cc227d8.dir
+      size: 5371
       nfiles: 1
   forecasting:
     cmd: papermill input_notebooks/prophet_forecasting.ipynb output_notebooks/prophet_forecasting_out.ipynb
+      -p COUNTRY RU -p EXPERIMENT prophet_forecasting -p intervel 0.95
     deps:
     - path: datadir/datasets
-      md5: 9232fb21abd122428761f623944c0bfa.dir
-      size: 5732
+      md5: 15b2379fbeabf992dd22a5186cc227d8.dir
+      size: 5371
       nfiles: 1
     - path: input_notebooks/prophet_forecasting.ipynb
-      md5: 0196a9d8f4a83c4e6134883fe787d1e7
-      size: 4222803
+      md5: dad24e7068306f8956f22524dd62cc50
+      size: 4221788
+    - path: model/prophet
+      md5: fd63abe88d37cfdd4d3bdfc9a9118adb.dir
+      size: 228468
+      nfiles: 3
   Feature_engineering:
     cmd: papermill input_notebooks/Feature_engineering.ipynb output_notebooks/Feature_engineering_out.ipynb
+      -p COUNTRY RU
     deps:
     - path: datadir/datasets
-      md5: 9232fb21abd122428761f623944c0bfa.dir
-      size: 5732
+      md5: 15b2379fbeabf992dd22a5186cc227d8.dir
+      size: 5371
       nfiles: 1
     - path: input_notebooks/Feature_engineering.ipynb
       md5: f296566b8d29626ea1332609b27eaee7
       size: 27760
     outs:
     - path: datadir/transformed
-      md5: 5d29a7096293dca23bdb0c15f0e5a600.dir
-      size: 43910
+      md5: b310de8e7c1bc5b3c4d118bd602a5cf1.dir
+      size: 42614
       nfiles: 2
   oil_forecasting:
     cmd: papermill input_notebooks/oil_forecasting.ipynb output_notebooks/oil_forecasting_out.ipynb
+      -p COUNTRY RU -p GAMMA 2 -p C_VALUE 1 -p N_NEIGHBORS 5 -p N_ESTIMATORS 100
     deps:
-    - path: datadir/datasets
-      md5: 9232fb21abd122428761f623944c0bfa.dir
-      size: 5732
-      nfiles: 1
+    - path: datadir/transformed
+      md5: b310de8e7c1bc5b3c4d118bd602a5cf1.dir
+      size: 42614
+      nfiles: 2
     - path: input_notebooks/oil_forecasting.ipynb
-      md5: 214035ae6d210cb88302a4348e53369a
-      size: 538705
+      md5: 63e30b46936a971852c2539dcaeda087
+      size: 550352
     outs:
-    - path: artifact_dir
-      md5: 393943312c3eeb041a95896e95eb8597.dir
-      size: 2171907
-      nfiles: 20
+    - path: artifact_dir/metrics
+      md5: 60f93d71c511dffb1fd2be8e9ad0c343.dir
+      size: 451
+      nfiles: 5
+    - path: artifact_dir/models
+      md5: f7b7c4ef3a53de7857f3e30c50c26d18.dir
+      size: 1964949
+      nfiles: 5
+    - path: artifact_dir/plots
+      md5: c8b4f1baa329b6e0ff65503f89251d53.dir
+      size: 279568
+      nfiles: 10
   model_registry:
     cmd: papermill input_notebooks/model_registry.ipynb output_notebooks/model_registry_out.ipynb
+      -p COUNTRY RU -p model_name Logistic_Regression -p model_version 1
     deps:
+    - path: artifact_dir/models
+      md5: f7b7c4ef3a53de7857f3e30c50c26d18.dir
+      size: 1964949
+      nfiles: 5
     - path: input_notebooks/model_registry.ipynb
-      md5: e599d4ce24092cc23a76ab652e211cbd
-      size: 6054
+      md5: d60e10a44643859840b9f9a554d79708
+      size: 7082
+    - path: model/prophet
+      md5: fd63abe88d37cfdd4d3bdfc9a9118adb.dir
+      size: 228468
+      nfiles: 3
